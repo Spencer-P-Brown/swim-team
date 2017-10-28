@@ -1,0 +1,3 @@
+[console_scripts]
+swimteam-run = swimteam_server.cmd.run:main
+
