@@ -7,8 +7,11 @@ from flask_migrate import Migrate
 from werkzeug.routing import BaseConverter
 import flask_restless
 
+from sqlalchemy import Table, Column, Integer, String, VARCHAR, LargeBinary, UnicodeText
+
 from swimteam_server.extensions import DB
 # from swimteam_server.models import models
+from swimteam_server.blueprints.users import generate_users_blueprint
 
 MIGRATE = Migrate()
 
@@ -19,13 +22,23 @@ class RegexConverter(BaseConverter):
         self.regex = items[0]
 
 
+
+class User(DB.Model):
+
+    __tablename__ = "users"
+
+    id = DB.Column(DB.Integer, primary_key=True)
+    email = DB.Column(DB.String(250), nullable=False, unique=True)
+    password = DB.Column(DB.String(250), nullable=False)
+
+
 def generate_application(config=None):
     """Generate an application from a given configuration file."""
     application = Flask(__name__)
     application.config.from_object(config or 'swimteam_server.config.dev')
     CORS(application, send_wildcard=True)
     application.url_map.converters['regex'] = RegexConverter
-    # application.register_blueprint(blueprint_file.generate_blueprint_callback(application.config))
+    application.register_blueprint(generate_users_blueprint(application.config))
 
     # create db instance
     DB.app = application
@@ -47,7 +60,8 @@ def generate_application(config=None):
     #         manager.create_api(klass, methods=STANDARD_METHODS, results_per_page=results_per_page)
 
     # hardcode for now
-    # manager.create_api(models.Location, methods=STANDARD_METHODS, results_per_page=results_per_page)
+    # manager.create_api(User, methods=STANDARD_METHODS, results_per_page=results_per_page)
+    manager.create_api(User, methods=STANDARD_METHODS)
 
     MIGRATE.init_app(application, DB)
     return application

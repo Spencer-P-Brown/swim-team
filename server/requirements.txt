@@ -3,6 +3,7 @@ flask
 flask-cors
 flask-restless
 flask_migrate
+Flask-Script
 Flask-SQLAlchemy
 PyMySQL
 requests
