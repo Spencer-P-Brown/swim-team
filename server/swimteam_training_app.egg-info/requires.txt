@@ -1,0 +1,7 @@
+flask
+flask_restless
+flask-cors
+Flask-Migrate
+Flask-SQLAlchemy
+PyMySQL
+requests
